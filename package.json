@@ -1,6 +1,6 @@
 {
   "name": "@ngx-reactive/decorator",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Additional Angular 2+ decorators to speed up development.",
   "author": "Ścibor Rudnicki <scibor.rudnicki@wwwdev.io> (http://wwwwdev.io)",
   "homepage": "https://github.com/ngx-reactive/decorator#readme",

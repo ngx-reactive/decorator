@@ -3,9 +3,13 @@
 
 Additional Angular 2+ decorators to speed up development.
 
-
 ----
 
+* [Demonstration](#demonstration)
+* [Install](#install)
+* [Usage](#usage)
+  * [@Subscribe](#subscribe)
+  * [@Unsubscribe](#unsubscribe)
 * [Git](#git)
   * [Commit](#commit)
   * [Versioning](#versioning)
@@ -14,6 +18,164 @@ Additional Angular 2+ decorators to speed up development.
 
 ----
 
+## Demonstration
+
+Demonstration usage with `@angular/cli` get from github [repository](https://github.com/ngx-reactive/demo) by opening your command line and do the following:
+
+```bash
+git clone https://github.com/ngx-reactive/demo
+cd demo
+npm install && npm start
+```
+
+Open http://localhost:4200/ in your browser.
+
+
+## Install
+
+To install, run:
+
+```bash
+npm i @ngx-reactive/decorator --save
+```
+
+## Usage
+
+### @Subscribe
+
+----
+
+Pros:   
+* Everything happens on `onInit` lifecycle hook, and you do not need to remember to implement it.
+* Unsubscribe all subscribed properties on `onDestroy` lifecycle hook, and you do not need to implement it.
+* You can still define your own `setter` and `getter`.
+* It observes changes to specified property name, so you can still work on property as usual.
+
+Cons:   
+* Possibility to use only `Subject`.
+* There are no typeguards.
+
+----
+
+**Example** on `@angular/cli`, add the following component:
+
+```typescript
+import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { Observable } from 'rxjs/Observable';
+import { Subscription } from 'rxjs/Subscription';
+import { Subscribe } from '@ngx-reactive/decorator';
+
+@Component({
+  selector: 'app-subscribe-component',
+  templateUrl: './subscribe.component.html'
+})
+@Subscribe<string>(['prop', 'inputPropSG'])
+@Subscribe<number>(['inputProp'])
+export class SubscribeComponent implements OnDestroy, OnInit {
+
+  prop = 'Because it is';
+  @Input('inputProp') inputProp: number;
+
+  _inputPropSG: string;
+  @Input('inputPropSG') set inputPropSG(value: string) {
+    this._inputPropSG = value;
+  }
+  get inputPropSG(): string {
+    return this._inputPropSG;
+  }
+
+  /**
+   * Observable instance to subscribe.
+   * @type {Observable<string>}
+   * @memberof SubscribeComponent
+   */
+  public prop$: Observable<string>;
+  public inputPropSG$: Observable<string>;
+
+  /**
+   *
+   * @type {Observable<number>}
+   * @memberof SubscribeComponent
+   */
+  public inputProp$: Observable<number>;
+
+  /**
+   * Subscription instance of observable.
+   * @type {Subscription}
+   * @memberof SubscribeComponent
+   */
+  public prop$$$: Subscription;
+  public inputProp$$$: Subscription;
+  public inputPropSG$$$: Subscription;
+
+  constructor() { }
+
+  ngOnDestroy() {
+    console.log(this);
+  }
+
+  ngOnInit() {
+    this.prop$$$ = this.prop$.subscribe({
+      next: (value: string) => {
+        console.log(`subscribe['prop']: `, value, this);
+      }
+    });
+    this.inputPropSG$$$ = this.inputPropSG$.subscribe({
+      next: (value: string) => {
+        console.log(`subscribe['inputPropSG']: `, value, this);
+      }
+    });
+    this.inputProp$$$ = this.inputProp$.subscribe({
+      next: (value: number) => {
+        console.log(`subscribe['inputProp']: `, value);
+      }
+    });
+  }
+
+  update(input: any) {
+    this[input['name']] = input['value'];
+  }
+}
+
+```
+
+### @Unsubscribe
+
+**Example** on `@angular/cli`, add the following component:
+
+```typescript
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Unsubscribe } from '@ngx-reactive/decorator';
+import { Subject } from 'rxjs/Subject';
+import { Subscription } from 'rxjs/Subscription';
+import { Observable } from 'rxjs/Observable';
+
+@Component({
+  selector: 'app-unsubscribe',
+  templateUrl: './unsubscribe.component.html'
+})
+@Unsubscribe()
+export class UnsubscribeComponent implements OnDestroy, OnInit {
+
+  subject: Subject<string> = new Subject();
+  observable: Observable<string> = this.subject.asObservable();
+  subscription: Subscription = this.observable.subscribe({
+    next: (value: string) => {
+      console.log(`subscribe`, value);
+    }
+  });
+
+  constructor() { }
+
+  ngOnDestroy() {
+    console.log(this);
+  }
+
+  ngOnInit() {
+    this.subject.next('aaaa');
+  }
+}
+```
 
 ## GIT
 

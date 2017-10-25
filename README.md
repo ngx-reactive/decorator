@@ -41,9 +41,12 @@ npm i @ngx-reactive/decorator --save
 
 ## Usage
 
-### @Subscribe<T>(observables: string[])
+### @Subscribe
 
-----
+```typescript
+@Subscribe<T>(observables: string[])
+```
+
 
 Pros:   
 * Everything happens on `onInit` lifecycle hook, and you do not need to remember to implement it.
@@ -55,7 +58,7 @@ Cons:
 * Possibility to use only `Subject`.
 * There are no typeguards.
 
-----
+
 
 **Example** on `@angular/cli`, add the following component:
 
@@ -139,7 +142,11 @@ export class SubscribeComponent implements OnDestroy, OnInit {
 
 ```
 
-### @Unsubscribe<T>(observables?: string[])
+### @Unsubscribe
+
+```typescript
+@Unsubscribe<T>(observables?: string[])
+```
 
 **Example** on `@angular/cli`, add the following component:
 

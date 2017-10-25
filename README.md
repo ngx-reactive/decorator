@@ -41,7 +41,7 @@ npm i @ngx-reactive/decorator --save
 
 ## Usage
 
-### @Subscribe
+### @Subscribe<T>(observables: string[])
 
 ----
 
@@ -139,7 +139,7 @@ export class SubscribeComponent implements OnDestroy, OnInit {
 
 ```
 
-### @Unsubscribe
+### @Unsubscribe<T>(observables?: string[])
 
 **Example** on `@angular/cli`, add the following component:
 

@@ -12,6 +12,6 @@ import { unsubscribeOnDestroy } from './unsubscribe-on-destroy.func';
 export function Subscribe<T>(observables: ObservablesInterface): Function {
   return function (target: any) {
     subscribeOnInit<T>(target, observables);
-    unsubscribeOnDestroy(target);
+    unsubscribeOnDestroy(target, observables);
   }
 };

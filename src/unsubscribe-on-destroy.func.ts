@@ -11,19 +11,20 @@ export const unsubscribeOnDestroy = function (target: any, observables?: Observa
     if (observables === undefined) {
       _.each(this, (subscription: Subscription) => {
         // Find properties in component and search for subscription instance.
-        if (subscription instanceof Subscription) {
+        if (subscription instanceof Subscription && subscription.closed === false) {
           subscription.unsubscribe();
         }
       });
     } else {
-      /*
-      _.each(observables, (observer: string) => {
-        // Find properties in component and search for subscription instance.
-        if (this.subscription[observer] instanceof Subscription) {
-          this.subscription[observer].unsubscribe();
-        }
+      _.each(this, (subscription: Subscription, key: string) => {
+        _.each(observables, (observableName: string) => {
+          if (key.includes(observableName)) {
+            if (subscription instanceof Subscription && subscription.closed === false) {
+              subscription.unsubscribe();
+            }
+          }
+        });
       });
-      */
     }
     if (ngOnDestroy !== undefined) {
       ngOnDestroy.apply(this, arguments);

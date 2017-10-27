@@ -18,16 +18,17 @@ export const subscribeOnInit = function <T>(target: any, observables: Observable
     lookup.setter[property] = target.prototype.__proto__.__lookupSetter__(property);
   });
 
-  target.prototype.ngOnInit = function(): void {
+  target.prototype.ngOnInit = function (): void {
     if (observables instanceof Array) {
       _.each(observables, (property: string) => {
+        const originalValue = this[property];
         // Define `Subject` in $$ suffix property name component.
         Object.defineProperty(this, `${property}$$`, { writable: false, value: new Subject<T>() });
         // Define poperty for subscribe to subject.
         Object.defineProperty(this, `${property}$`, { writable: false, value: this[`${property}$$`].asObservable() })
         // Add to Setter/Getter to subscribed property.
         Object.defineProperty(this, property, {
-          set: function(value: T) {
+          set: function (value: T) {
             // Send `value` to Subject.
             setTimeout(() => {
               this[`${property}$$`].next(value);
@@ -47,6 +48,7 @@ export const subscribeOnInit = function <T>(target: any, observables: Observable
             }
           }
         });
+        this[`_${property}`] = originalValue;
       });
     }
 
